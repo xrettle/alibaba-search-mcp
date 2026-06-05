@@ -208,12 +208,12 @@ app.post("/call", async (req, res) => {
       });
     }
 
-    return res.status(400).json({
+    return res.status(200).json({
       jsonrpc: "2.0",
-      id,
+      id: id ?? null,
       error: {
         code: -32601,
-        message: `Method ${method} not supported.`
+        message: "Method not found."
       }
     });
   } catch (err: any) {
