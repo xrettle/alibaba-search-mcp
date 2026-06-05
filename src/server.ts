@@ -70,6 +70,19 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    name: "Alibaba Research MCP Server",
+    version: "1.0.0",
+    transport: "streamable-http",
+    endpoints: {
+      health: "/health",
+      call: "/call",
+      sse: "/sse"
+    }
+  });
+});
+
 // --- Streamable HTTP (Direct JSON-RPC over POST) ---
 // Perplexity Custom Connectors can invoke tools synchronously by sending direct POST payloads.
 app.get("/call", (req, res) => {
