@@ -72,12 +72,26 @@ app.get("/health", (req, res) => {
 
 // --- Streamable HTTP (Direct JSON-RPC over POST) ---
 // Perplexity Custom Connectors can invoke tools synchronously by sending direct POST payloads.
+app.get("/call", (req, res) => {
+  res.json({ status: "ok", transport: "streamable-http" });
+});
+
 app.post("/call", async (req, res) => {
   try {
     const { method, params, id } = req.body || {};
     console.log(`[HTTP] Direct JSON-RPC call received for method: ${method}`);
 
-    if (method === "tools/list") {
+    if (method === "initialize") {
+      return res.json({
+        jsonrpc: "2.0",
+        id,
+        result: {
+          protocolVersion: "2024-11-05",
+          capabilities: { tools: {} },
+          serverInfo: { name: "alibaba-search-mcp", version: "1.0.0" }
+        }
+      });
+    } else if (method === "tools/list") {
       return res.json({
         jsonrpc: "2.0",
         id,
