@@ -2,6 +2,9 @@
 # This contains Node.js, Chromium, and all system libraries pre-installed
 FROM mcr.microsoft.com/playwright:v1.44.0-jammy
 
+# Switch to root user for installing dependencies and building
+USER root
+
 # Set working directory
 WORKDIR /usr/src/app
 
