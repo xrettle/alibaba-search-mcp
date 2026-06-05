@@ -77,8 +77,9 @@ app.get("/call", (req, res) => {
 });
 
 app.post("/call", async (req, res) => {
+  const { method, params, id: rawId } = req.body || {};
+  const id = rawId ?? 0;
   try {
-    const { method, params, id } = req.body || {};
     console.log(`[HTTP] Direct JSON-RPC call received for method: ${method}`);
 
     if (method === "initialize") {
@@ -183,9 +184,9 @@ app.post("/call", async (req, res) => {
           break;
         }
         default:
-          return res.status(404).json({
+          return res.status(200).json({
             jsonrpc: "2.0",
-            id,
+            id: id,
             error: {
               code: -32601,
               message: `Tool ${name} not found.`
@@ -210,7 +211,7 @@ app.post("/call", async (req, res) => {
 
     return res.status(200).json({
       jsonrpc: "2.0",
-      id: id ?? null,
+      id: id,
       error: {
         code: -32601,
         message: "Method not found."
@@ -218,13 +219,13 @@ app.post("/call", async (req, res) => {
     });
   } catch (err: any) {
     console.error("[HTTP] Direct JSON-RPC execution failed:", err);
-    res.status(500).json({
+    return res.status(200).json({
       jsonrpc: "2.0",
-      id: req.body?.id || null,
+      id: id,
       error: {
-        code: -32603,
-        message: err.message || "Internal error occurred during direct JSON-RPC execution.",
-      },
+        code: -32601,
+        message: err.message || "Internal error occurred during direct JSON-RPC execution."
+      }
     });
   }
 });
