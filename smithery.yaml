@@ -1,0 +1,37 @@
+startCommand:
+  type: stdio
+  commandFunction: |-
+    (config) => ({
+      command: 'node',
+      args: ['dist/server.js'],
+      env: {
+        MAX_CONCURRENCY: String(config.maxConcurrency ?? 2),
+        CACHE_TTL_SECONDS: String(config.cacheTtlSeconds ?? 1800),
+        REQUEST_TIMEOUT_MS: String(config.requestTimeoutMs ?? 30000),
+        MAX_RETRIES: String(config.maxRetries ?? 2),
+        MCP_BEARER_TOKEN: config.mcpBearerToken ?? ''
+      }
+    })
+
+configSchema:
+  type: object
+  properties:
+    maxConcurrency:
+      type: integer
+      default: 2
+      description: "Limit active Chromium tabs concurrently"
+    cacheTtlSeconds:
+      type: integer
+      default: 1800
+      description: "Cache retention time in seconds"
+    requestTimeoutMs:
+      type: integer
+      default: 30000
+      description: "Playwright browser timeout in milliseconds"
+    maxRetries:
+      type: integer
+      default: 2
+      description: "Number of retry attempts on block pages"
+    mcpBearerToken:
+      type: string
+      description: "Optional secret token to authenticate remote requests"
