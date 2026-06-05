@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: alibaba-search-mcp
+    runtime: docker
+    plan: free # Can be upgraded if resource limits are hit
+    envVars:
+      - key: MAX_CONCURRENCY
+        value: 2
+      - key: CACHE_TTL_SECONDS
+        value: 1800
+      - key: REQUEST_TIMEOUT_MS
+        value: 30000
+      - key: MAX_RETRIES
+        value: 2
+      - key: MCP_BEARER_TOKEN
+        sync: false # Set in the Render Dashboard env section manually for security
