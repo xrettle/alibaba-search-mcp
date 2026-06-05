@@ -279,6 +279,17 @@ app.post("/message", async (req, res) => {
   await transport.handlePostMessage(req, res);
 });
 
+app.use((req, res) => {
+  res.status(404).json({
+    jsonrpc: "2.0",
+    id: 0,
+    error: {
+      code: -32601,
+      message: `Path ${req.path} not found.`
+    }
+  });
+});
+
 // Start Express Listener
 const server = app.listen(PORT, HOST, () => {
   console.log(`===============================================`);
