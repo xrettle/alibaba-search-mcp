@@ -78,6 +78,7 @@ app.get("/", (req, res) => {
     endpoints: {
       health: "/health",
       call: "/call",
+      mcp: "/mcp",
       sse: "/sse"
     }
   });
@@ -85,11 +86,7 @@ app.get("/", (req, res) => {
 
 // --- Streamable HTTP (Direct JSON-RPC over POST) ---
 // Perplexity Custom Connectors can invoke tools synchronously by sending direct POST payloads.
-app.get("/call", (req, res) => {
-  res.json({ status: "ok", transport: "streamable-http" });
-});
-
-app.post("/call", async (req, res) => {
+const handleJsonRpc = async (req: express.Request, res: express.Response) => {
   const { method, params, id: rawId } = req.body || {};
   const id = rawId ?? 0;
   try {
@@ -241,7 +238,18 @@ app.post("/call", async (req, res) => {
       }
     });
   }
+};
+
+app.get("/call", (req, res) => {
+  res.json({ status: "ok", transport: "streamable-http" });
 });
+
+app.get("/mcp", (req, res) => {
+  res.json({ status: "ok", transport: "streamable-http" });
+});
+
+app.post("/call", handleJsonRpc);
+app.post("/mcp", handleJsonRpc);
 
 // --- SSE (Server-Sent Events) Transport ---
 // Handles standard MCP SSE connection management and message posting.
